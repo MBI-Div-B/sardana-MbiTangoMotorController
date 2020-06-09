@@ -1,6 +1,12 @@
 # sardana-MbiTangoMotorController
 Sardana contoller for standard MBI Tango motor controller
 
+## Compatible Devices
+
+https://github.com/MBI-Div-B/pytango-PhytronMCC2
+
+## Configuration
+
 You need to set the Tango device name for each axis of this generic controller by the axis_attribute: Tango_Device
 
 The state and status of the Tango device are direclty mapped as state and status of the sardana motor.
