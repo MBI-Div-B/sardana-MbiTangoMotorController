@@ -41,9 +41,10 @@ class MbiTangoMotorController(MotorController):
         limit_minus = self.axis_extra_pars[axis]['Proxy'].read_attribute("hw_limit_minus").value
         if limit_plus:
             switch_state |= MotorController.UpperLimitSwitch
-            state = State.Alarm
+
         elif limit_minus:
             switch_state |= MotorController.LowerLimitSwitch
+
             
         if (state != State.Moving) & (limit_plus | limit_minus):
             state = State.Alarm
