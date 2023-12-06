@@ -1,4 +1,4 @@
-from PyTango import DeviceProxy
+from tango import DeviceProxy, DevFloat, DevInt
 
 from sardana import State, DataAccess
 from sardana.pool.controller import MotorController
@@ -37,22 +37,16 @@ class MbiTangoMotorController(MotorController):
         state = self.axis_extra_pars[axis]['Proxy'].command_inout("State")
         status = self.axis_extra_pars[axis]['Proxy'].command_inout("Status")
         switch_state = MotorController.NoLimitSwitch
-        limit_plus = self.axis_extra_pars[axis]['Proxy'].read_attribute("hw_limit_plus").value
-        limit_minus = self.axis_extra_pars[axis]['Proxy'].read_attribute("hw_limit_minus").value
-        if limit_plus:
-            switch_state |= MotorController.UpperLimitSwitch
 
-        elif limit_minus:
+        if (state == State.Alarm) and ("limit+" in status):
+            switch_state |= MotorController.UpperLimitSwitch
+        if (state == State.Alarm) and ("limit-" in status):
             switch_state |= MotorController.LowerLimitSwitch
 
-            
-        if (state != State.Moving) & (limit_plus | limit_minus):
-            state = State.Alarm
         return state, status, switch_state
 
     def ReadOne(self, axis):
-        ret = self.axis_extra_pars[axis]['Proxy'].read_attribute("position").value
-        return ret
+        return self.axis_extra_pars[axis]['Proxy'].read_attribute("position").value
         
     def StartOne(self, axis, position):
         self.axis_extra_pars[axis]['Proxy'].write_attribute("position", position)
@@ -66,11 +60,11 @@ class MbiTangoMotorController(MotorController):
     def SetAxisPar(self, axis, name, value):
         if self.axis_extra_pars[axis]['Proxy']:
             if name == 'velocity':
-                self.axis_extra_pars[axis]['Proxy'].write_attribute("velocity", value)
+                self.axis_extra_pars[axis]['Proxy'].write_attribute("velocity", int(value))
             elif name in ['acceleration', 'deceleration']:
-                self.axis_extra_pars[axis]['Proxy'].write_attribute("acceleration", value)
+                self.axis_extra_pars[axis]['Proxy'].write_attribute("acceleration", int(value))
             elif name == 'step_per_unit':
-                self.axis_extra_pars[axis]['Proxy'].write_attribute("steps_per_unit", value)
+                self.axis_extra_pars[axis]['Proxy'].write_attribute("steps_per_unit", float(value))
             else:
                 self._log.debug('Parameter %s is not set' % name)
 
