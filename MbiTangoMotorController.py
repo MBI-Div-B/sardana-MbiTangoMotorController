@@ -60,9 +60,9 @@ class MbiTangoMotorController(MotorController):
     def SetAxisPar(self, axis, name, value):
         if self.axis_extra_pars[axis]['Proxy']:
             if name == 'velocity':
-                self.axis_extra_pars[axis]['Proxy'].write_attribute("velocity", int(value))
+                self.axis_extra_pars[axis]['Proxy'].write_attribute("velocity", float(value))
             elif name in ['acceleration', 'deceleration']:
-                self.axis_extra_pars[axis]['Proxy'].write_attribute("acceleration", int(value))
+                self.axis_extra_pars[axis]['Proxy'].write_attribute("acceleration", float(value))
             elif name == 'step_per_unit':
                 self.axis_extra_pars[axis]['Proxy'].write_attribute("steps_per_unit", float(value))
             else:
