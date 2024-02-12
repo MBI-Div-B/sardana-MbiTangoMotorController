@@ -1,4 +1,4 @@
-from tango import DeviceProxy, DevFloat, DevInt
+from tango import DeviceProxy
 
 from sardana import State, DataAccess
 from sardana.pool.controller import MotorController
